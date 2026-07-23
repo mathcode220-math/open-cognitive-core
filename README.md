@@ -221,7 +221,7 @@ We invite:
 - **Recommended Forums for Sharing:**
   - Reddit: r/OpenSourceHardware, r/LocalLLaMA, r/RISCV
   - Discord: RISC-V and Open-Source Hardware communities
-  - LinkedIn / X (Twitter): Share the strategic vision
+  
 
 ---
 
