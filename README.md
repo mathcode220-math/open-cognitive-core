@@ -216,7 +216,7 @@ We invite:
 
 ## 📬 Contact & Community
 
-- **Repository:** [Your GitHub Repository Link]
+- **Repository:** 
 - **Discussions:** GitHub Issues section
 - **Recommended Forums for Sharing:**
   - Reddit: r/OpenSourceHardware, r/LocalLLaMA, r/RISCV
