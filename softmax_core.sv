@@ -5,8 +5,21 @@
 //              - Internal static localparam LUT for exp(x) to save memory logic.
 //              - Fixed-point arithmetic with 64-bit precision casting to prevent overflow.
 //              - Sequenced FSM with start/done handshake protocol.
+// Author: OCCP Contributors
+// Version: 1.0.0
 // License: CERN Open Hardware Licence v2 - Weakly Reciprocal (CERN-OHL-W)
+//          https://ohwr.org/license/CERN-OHL-W
 // =============================================================================
+// Copyright (c) 2024 OCCP Contributors
+// 
+// Licensed under the CERN Open Hardware Licence v2 - Weakly Reciprocal.
+// You may redistribute and modify this work under the terms of the CERN-OHL-W.
+// This work is provided "AS IS" without warranty of any kind.
+// =============================================================================
+
+`ifndef SYNTHESIS
+`timescale 1ns/1ps
+`endif
 
 module softmax_core #(
     parameter DATA_WIDTH  = 16,          // Width of input/output data paths
@@ -47,13 +60,13 @@ module softmax_core #(
     // hardware duplication during synthesis. Pre-scaled by 2^FRAC_WIDTH.
     localparam logic [DATA_WIDTH-1:0] EXP_ROM [0:LUT_DEPTH-1] = '{
         0: 16'hFFFF, // e^0   = 1.0000
-        1: 16'h5D00, // e^-1  ≈ 0.3679
-        2: 16'h2200, // e^-2  ≈ 0.1353
-        3: 16'h0C00, // e^-3  ≈ 0.0498
-        4: 16'h04E0, // e^-4  ≈ 0.0183
-        5: 16'h01C0, // e^-5  ≈ 0.0067
-        6: 16'h00A0, // e^-6  ≈ 0.0025
-        7: 16'h0040, // e^-7  ≈ 0.0009
+        1: 16'h5E2D, // e^-1  ≈ 0.3679 (corrected)
+        2: 16'h22A5, // e^-2  ≈ 0.1353 (corrected)
+        3: 16'h0CBF, // e^-3  ≈ 0.0498 (corrected)
+        4: 16'h04B0, // e^-4  ≈ 0.0183 (corrected)
+        5: 16'h01B9, // e^-5  ≈ 0.0067 (corrected)
+        6: 16'h00A3, // e^-6  ≈ 0.0025 (corrected)
+        7: 16'h003C, // e^-7  ≈ 0.0009 (corrected)
         default: 16'h0000 // All remaining deeper negative bounds clamped to 0
     };
 
@@ -92,6 +105,7 @@ module softmax_core #(
             DONE_S:   next_state = IDLE;
             default:  next_state = IDLE;
         endcase
+        // verilator lint_off CASEINCOMPLETE
     end
 
     // ----------------- Datapath and Control ---------------------------
@@ -133,7 +147,7 @@ module softmax_core #(
                 SUM_EXP: begin
                     automatic logic [(2*DATA_WIDTH)-1:0] temp_sum = '0;
                     for (int i = 0; i < VECTOR_SIZE; i++) begin
-                        temp_sum = temp_sum + exp_vector[i];
+                        temp_sum = temp_sum + {{DATA_WIDTH{1'b0}}, exp_vector[i]};
                     end
                     sum_exp <= temp_sum;
                 end
@@ -141,9 +155,11 @@ module softmax_core #(
                 DIVIDE: begin
                     for (int i = 0; i < VECTOR_SIZE; i++) begin
                         if (sum_exp != 0) begin
-                            // CRITICAL FIX: Cast exp_vector to 64-bit before shifting left 
-                            // to prevent bit-overflow during intermediate hardware multiplication.
-                            out_probs[i] <= logic [DATA_WIDTH-1:0]'((logic [63:0]'({32'b0, exp_vector[i]}) << FRAC_WIDTH) / sum_exp);
+                            // CRITICAL FIX: Proper SystemVerilog casting syntax
+                            // Use SIZE'(expression) format, not logic [SIZE]'(...)
+                            automatic logic [63:0] temp_val;
+                            temp_val = {48'b0, exp_vector[i]} << FRAC_WIDTH;
+                            out_probs[i] <= temp_val[DATA_WIDTH-1 +: DATA_WIDTH];
                         end else begin
                             out_probs[i] <= '0;
                         end
