@@ -53,12 +53,12 @@ module tb_matrix_multiply_2x2;
 
     // Test task
     task run_test;
+        input [31:0] test_num;
         input signed [DATA_WIDTH-1:0] ta00, ta01, ta10, ta11;
         input signed [DATA_WIDTH-1:0] tb00, tb01, tb10, tb11;
         input signed [OUT_WIDTH-1:0] exp_c00, exp_c01, exp_c10, exp_c11;
-        input [31:0] test_num;
         begin
-            $display(\"\\n[Test %0d] Running...\", test_num);
+            $display("\n[Test %0d] Running...", test_num);
             a00 = ta00; a01 = ta01; a10 = ta10; a11 = ta11;
             b00 = tb00; b01 = tb01; b10 = tb10; b11 = tb11;
             en = 1;
@@ -68,19 +68,19 @@ module tb_matrix_multiply_2x2;
             @(posedge clk);
             
             if (c00 === exp_c00 && c01 === exp_c01 && c10 === exp_c10 && c11 === exp_c11)
-                $display(\"[Test %0d] PASS\", test_num);
+                $display("[Test %0d] PASS", test_num);
             else begin
-                $display(\"[Test %0d] FAIL\", test_num);
-                $display(\"  Expected: c00=%0d, c01=%0d, c10=%0d, c11=%0d\", exp_c00, exp_c01, exp_c10, exp_c11);
-                $display(\"  Got:      c00=%0d, c01=%0d, c10=%0d, c11=%0d\", c00, c01, c10, c11);
+                $display("[Test %0d] FAIL", test_num);
+                $display("  Expected: c00=%0d, c01=%0d, c10=%0d, c11=%0d", exp_c00, exp_c01, exp_c10, exp_c11);
+                $display("  Got:      c00=%0d, c01=%0d, c10=%0d, c11=%0d", c00, c01, c10, c11);
             end
         end
     endtask
 
     initial begin
-        $display(\"========================================\");
-        $display(\"Matrix Multiply 2x2 Testbench\");
-        $display(\"========================================\");
+        $display("========================================");
+        $display("Matrix Multiply 2x2 Testbench");
+        $display("========================================");
 
         // Reset
         rst_n = 0;
@@ -91,8 +91,9 @@ module tb_matrix_multiply_2x2;
         // Case 1: Identity matrix
         run_test(1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1);
 
-        // Case 2: Simple multiplication
-        run_test(2, 3, 0, 2, 1, 0, 4, 6, 8, 0, 12, 4);
+        // Case 2: Simple multiplication (A=[[3,0],[2,1]], B=[[4,6],[8,0]])
+        // C00=3*4+0*8=12, C01=3*6+0*0=18, C10=2*4+1*8=16, C11=2*6+1*0=12
+        run_test(2, 3, 0, 2, 1, 4, 6, 8, 0, 12, 18, 16, 12);
 
         // Case 3: Negative values
         run_test(3, -1, 2, -3, 4, 5, -6, 7, -8, -19, 22, -43, 50);
@@ -103,9 +104,9 @@ module tb_matrix_multiply_2x2;
         // Case 5: Overflow boundary (-128 * -128 * 2 = 32768)
         run_test(5, -128, -128, -128, -128, -128, -128, -128, -128, 32768, 32768, 32768, 32768);
 
-        $display(\"\\n========================================\");
-        $display(\"All tests completed!\");
-        $display(\"========================================\");
+        $display("\n========================================");
+        $display("All tests completed!");
+        $display("========================================");
         #20;
         $finish;
     end

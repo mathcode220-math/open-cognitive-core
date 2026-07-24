@@ -56,6 +56,7 @@ module tb_axi4_lite_core_ctrl;
     // External signals from core
     logic ctrl_global_en;
     logic ctrl_array_clr;
+    logic ctrl_softmax_start;
     logic core_softmax_done = 1'b0;
 
     // Clock generation
@@ -88,6 +89,7 @@ module tb_axi4_lite_core_ctrl;
         .S_AXI_RREADY(S_AXI_RREADY),
         .ctrl_global_en(ctrl_global_en),
         .ctrl_array_clr(ctrl_array_clr),
+        .ctrl_softmax_start(ctrl_softmax_start),
         .core_softmax_done(core_softmax_done)
     );
 
@@ -111,7 +113,7 @@ module tb_axi4_lite_core_ctrl;
             wait(S_AXI_BVALID);
             @(posedge S_AXI_ACLK);
             S_AXI_BREADY = 0;
-            $display(\"[AXI WRITE] Addr=0x%0h, Data=0x%0h, BRESP=%b\", addr, data, S_AXI_BRESP);
+            $display("[AXI WRITE] Addr=0x%0h, Data=0x%0h, BRESP=%b", addr, data, S_AXI_BRESP);
         end
     endtask
 
@@ -129,7 +131,7 @@ module tb_axi4_lite_core_ctrl;
             wait(S_AXI_RVALID);
             @(posedge S_AXI_ACLK);
             S_AXI_RREADY = 0;
-            $display(\"[AXI READ] Addr=0x%0h, Data=0x%0h, RRESP=%b\", addr, S_AXI_RDATA, S_AXI_RRESP);
+            $display("[AXI READ] Addr=0x%0h, Data=0x%0h, RRESP=%b", addr, S_AXI_RDATA, S_AXI_RRESP);
         end
     endtask
 
