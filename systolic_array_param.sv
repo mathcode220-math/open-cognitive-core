@@ -3,41 +3,63 @@
 // File: systolic_array_param.sv
 // Description: Unified Parameterized Systolic Array with global clock enable
 //              and its internal Processing Element (PE) for AI matrix acceleration.
+// Author: OCCP Contributors
+// Version: 1.0.0
 // License: CERN Open Hardware Licence v2 - Weakly Reciprocal (CERN-OHL-W)
+//          https://ohwr.org/license/CERN-OHL-W
 // =============================================================================
+// Copyright (c) 2024 OCCP Contributors
+// 
+// Licensed under the CERN Open Hardware Licence v2 - Weakly Reciprocal.
+// You may redistribute and modify this work under the terms of the CERN-OHL-W.
+// This work is provided "AS IS" without warranty of any kind.
+// =============================================================================
+
+`ifndef SYNTHESIS
+`timescale 1ns/1ps
+`endif
 
 // -----------------------------------------------------------------------------
 // 1. Processing Element (PE) Module
 // -----------------------------------------------------------------------------
 module pe #(
-    parameter DATA_WIDTH = 16
+    parameter DATA_WIDTH = 16,
+    parameter ARRAY_SIZE = 4  // For accumulator overflow protection
 )(
     input  logic                    clk,
     input  logic                    rst_n, // Asynchronous active-low reset
     input  logic                    en,    // Clock enabling signal for power saving & stalling
     input  logic                    clr,   // Synchronous accumulator clear (restarts MAC)
-    input  logic [DATA_WIDTH-1:0]   in_a,  // Activation input from left
-    input  logic [DATA_WIDTH-1:0]   in_b,  // Weight input from top
-    output logic [DATA_WIDTH-1:0]   out_a, // Registered data output to right
-    output logic [DATA_WIDTH-1:0]   out_b, // Registered data output downwards
-    output logic [(2*DATA_WIDTH)-1:0] accum // 2x bit-width to prevent overflow during MAC
+    input  logic signed [DATA_WIDTH-1:0]   in_a,  // Activation input from left (SIGNED)
+    input  logic signed [DATA_WIDTH-1:0]   in_b,  // Weight input from top (SIGNED)
+    output logic signed [DATA_WIDTH-1:0]   out_a, // Registered data output to right
+    output logic signed [DATA_WIDTH-1:0]   out_b, // Registered data output downwards
+    output logic signed [(2*DATA_WIDTH)-1:0] accum // 2x bit-width to prevent overflow during MAC (SIGNED)
 );
+
+    // Extended accumulator for safe accumulation with extra bits for array summation
+    localparam int EXTRA_BITS = $clog2(ARRAY_SIZE + 1);
+    logic signed [(2*DATA_WIDTH + EXTRA_BITS)-1:0] accum_extended;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             out_a <= '0;
             out_b <= '0;
-            accum <= '0;
+            accum_extended <= '0;
         end else if (en) begin
             out_a <= in_a;
             out_b <= in_b;
             if (clr) begin
-                accum <= '0;
+                accum_extended <= '0;
             end else begin
-                accum <= accum + (in_a * in_b);
+                // Signed multiplication with proper sign extension
+                accum_extended <= accum_extended + ($signed(in_a) * $signed(in_b));
             end
         end
     end
+    
+    // Assign truncated result to output (upper bits preserved for sign)
+    assign accum = accum_extended[(2*DATA_WIDTH)-1:0];
 
 endmodule
 
@@ -83,7 +105,8 @@ module systolic_array_param #(
         for (r = 0; r < ARRAY_ROWS; r++) begin : row_gen
             for (c = 0; c < ARRAY_COLS; c++) begin : col_gen
                 pe #(
-                    .DATA_WIDTH(DATA_WIDTH)
+                    .DATA_WIDTH(DATA_WIDTH),
+                    .ARRAY_SIZE(ARRAY_ROWS * ARRAY_COLS)
                 ) pe_inst (
                     .clk   (clk),
                     .rst_n (rst_n),
