@@ -40,7 +40,7 @@ module tb_axi4_lite_core_ctrl;
     // AXI4-Lite Write Response Channel
     logic [1:0] S_AXI_BRESP;
     logic S_AXI_BVALID;
-    logic S_AXI_BREADY = 0;
+    logic S_AXI_BREADY;
 
     // AXI4-Lite Read Address Channel
     logic [ADDR_WIDTH-1:0] S_AXI_ARADDR = 0;
