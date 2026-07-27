@@ -167,7 +167,7 @@ This project is fully licensed under:
 
 - It is **legally prohibited** for any entity or corporation to take this design and turn it into a closed or monopolistic commercial product.
 - Any modification or manufacturing must remain open and accessible to all of humanity.
-- Full details: [https://ohwr.org](https://ohwr.org)
+
 
 **Goal:** Prevent major corporations (NVIDIA, Intel, Apple) from stealing the idea and closing it — and keep Artificial Intelligence as a commons for humanity.
 
