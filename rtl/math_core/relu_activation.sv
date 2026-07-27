@@ -1,42 +1,35 @@
-// =============================================================================
-// Project: Open Cognitive Core Project (OCCP)
-// File: relu_activation.sv
-// Description: Parameterized Signed ReLU Activation Function. Accommodates 2x
-//              accumulator bit-width directly from the Systolic Array outputs.
-// Author: OCCP Contributors
-// Version: 1.0.0
-// License: CERN Open Hardware Licence v2 - Weakly Reciprocal (CERN-OHL-W)
-//          https://ohwr.org/license/CERN-OHL-W
-// =============================================================================
-// Copyright (c) 2024 OCCP Contributors
-// 
-// Licensed under the CERN Open Hardware Licence v2 - Weakly Reciprocal.
-// You may redistribute and modify this work under the terms of the CERN-OHL-W.
-// This work is provided "AS IS" without warranty of any kind.
-// =============================================================================
-
-`ifndef SYNTHESIS
-`timescale 1ns/1ps
-`endif
+//=============================================================================
+// Module: relu_activation
+// Description: Parameterized signed ReLU activation with proper saturation
+// Fixes Applied:
+//   - Corrected saturation threshold to signed max (2^(DATA_WIDTH-1) - 1)
+//   - Corrected saturation output value (was -1, now true signed max)
+//=============================================================================
 
 module relu_activation #(
-    parameter DATA_WIDTH = 16,      // Matches the base bit-width of the computing grid
-    parameter ACCUM_WIDTH = 32      // Accumulator width from systolic array (2x DATA_WIDTH)
+    parameter DATA_WIDTH   = 16,
+    parameter ACCUM_WIDTH  = 32
 )(
-    input  logic signed [ACCUM_WIDTH-1:0] accum_in,   // Input from PE accumulator
-    output logic signed [DATA_WIDTH-1:0] relu_out     // ReLU output (saturated if needed)
+    input  logic signed [ACCUM_WIDTH-1:0]  accum_in,
+    output logic signed [DATA_WIDTH-1:0]   relu_out
 );
 
-    // ReLU: max(0, x) - if negative, output zero; otherwise pass through
+    // Signed maximum positive value: 2^(DATA_WIDTH-1) - 1
+    // For DATA_WIDTH=16: 0x7FFF = 32767
+    localparam logic signed [ACCUM_WIDTH-1:0] SIGNED_MAX = 
+        {{(ACCUM_WIDTH - DATA_WIDTH + 1){1'b0}}, {(DATA_WIDTH-1){1'b1}}};
+
     always_comb begin
-        if (accum_in < 0)
+        if (accum_in <= 0) begin
+            // Negative or zero -> output 0
             relu_out = '0;
-        else begin
-            // Saturate to maximum positive value if overflow
-            if (accum_in > {{(ACCUM_WIDTH-DATA_WIDTH){1'b0}}, {DATA_WIDTH{1'b1}}})
-                relu_out = '1;  // All ones for signed max positive
-            else
-                relu_out = accum_in[DATA_WIDTH-1:0];
+        end else if (accum_in > SIGNED_MAX) begin
+            // Overflow -> saturate to maximum positive signed value
+            // Correct: 0 followed by (DATA_WIDTH-1) ones = 0x7FFF for 16-bit
+            relu_out = {1'b0, {(DATA_WIDTH-1){1'b1}}};
+        end else begin
+            // Normal range -> truncate lower bits (value fits in DATA_WIDTH)
+            relu_out = accum_in[DATA_WIDTH-1:0];
         end
     end
 
