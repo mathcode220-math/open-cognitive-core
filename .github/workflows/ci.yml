@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-compile:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Verilator
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y verilator
+    
+    - name: Compile RTL sources
+      run: |
+        cd sim
+        make TOP_MODULE=tb_matrix_multiply_2x2
+        
+    - name: Compile AXI testbench
+      run: |
+        cd sim
+        make clean
+        make TOP_MODULE=tb_axi4_lite_core_ctrl
+
+  sanity-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check file structure
+      run: |
+        test -d rtl/math_core || exit 1
+        test -d rtl/memory || exit 1
+        test -d rtl/hdc || exit 1
+        test -d rtl/bus || exit 1
+        test -d rtl/top || exit 1
+        test -d tb || exit 1
+        test -d sim || exit 1
+        echo "✓ Directory structure is correct"
+        
+    - name: Verify critical files exist
+      run: |
+        test -f rtl/math_core/softmax_core.sv || exit 1
+        test -f rtl/math_core/systolic_array_param.sv || exit 1
+        test -f rtl/hdc/hdc_distance_core_v3.sv || exit 1
+        test -f rtl/bus/axi4_lite_core_ctrl.sv || exit 1
+        echo "✓ All critical RTL files present"
