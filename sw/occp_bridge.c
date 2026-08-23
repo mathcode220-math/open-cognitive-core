@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <time.h>
 /* unistd.h already included via occp_bridge.h */
 
 static volatile uint32_t *ctrl_reg = NULL;
@@ -72,7 +74,7 @@ int occp_dispatch_matrix_multiply(const float *matrix_A, const float *matrix_B, 
             return -1;
         }
         if (timeout_counter % 100000 == 0) {
-            usleep(1);
+            struct timespec ts = {0, 1000}; nanosleep(&ts, NULL);
         }
     }
     
@@ -110,7 +112,7 @@ int occp_dispatch_matrix_multiply(const float *matrix_A, const float *matrix_B, 
             return -1;
         }
         if (timeout_counter % 100000 == 0) {
-            usleep(1);
+            struct timespec ts = {0, 1000}; nanosleep(&ts, NULL);
         }
     }
     
