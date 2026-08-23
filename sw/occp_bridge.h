@@ -1,8 +1,11 @@
 #ifndef OCCP_BRIDGE_H
 #define OCCP_BRIDGE_H
 
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdint.h>
 #include <stddef.h>
+#include <unistd.h>
 
 #define OCCP_BASE_ADDR      0x40000000UL
 #define OCCP_CTRL_REG       (OCCP_BASE_ADDR + 0x00)
