@@ -1,21 +1,15 @@
 ```
 # Compiled and build artifacts
-*.pyc
-__pycache__/
 *.o
 *.obj
 *.out
-build/
-dist/
-target/
+sw/occp_bridge_test
 
 # Dependencies
 node_modules/
 venv/
 .venv/
-.env
-.env.local
-.env.*
+__pycache__/
 
 # Logs and temp files
 *.log
@@ -26,21 +20,8 @@ venv/
 .vscode/
 .idea/
 
-# OS specific
-.DS_Store
-Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Gradle
-.gradle/
-
-# MyPy
-.mypy_cache/
-
-# Pytest
-.pytest_cache/
+# Environment
+.env
+.env.local
+*.env.*
 ```

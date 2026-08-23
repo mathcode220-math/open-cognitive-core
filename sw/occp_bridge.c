@@ -1,8 +1,9 @@
+#define _POSIX_C_SOURCE 200809L
 #include "occp_bridge.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+/* unistd.h already included via occp_bridge.h */
 
 static volatile uint32_t *ctrl_reg = NULL;
 static volatile uint32_t *status_reg = NULL;
