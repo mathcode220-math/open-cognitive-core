@@ -105,13 +105,23 @@ module tb_axi4_lite_core_ctrl;
             S_AXI_WDATA = data;
             S_AXI_WSTRB = strb;
             S_AXI_WVALID = 1;
-            wait(S_AXI_AWREADY && S_AXI_WREADY);
+
+            // Wait for address channel acceptance (WRITE_ADDR asserts AWREADY)
+            wait(S_AXI_AWREADY);
             @(posedge S_AXI_ACLK);
+            #1;
             S_AXI_AWVALID = 0;
+
+            // Wait for data channel acceptance (WRITE_DATA asserts WREADY)
+            wait(S_AXI_WREADY);
+            @(posedge S_AXI_ACLK);
+            #1;
             S_AXI_WVALID = 0;
+
             S_AXI_BREADY = 1;
             wait(S_AXI_BVALID);
             @(posedge S_AXI_ACLK);
+            #1;
             S_AXI_BREADY = 0;
             $display("[AXI WRITE] Addr=0x%0h, Data=0x%0h, BRESP=%b", addr, data, S_AXI_BRESP);
         end
@@ -120,18 +130,22 @@ module tb_axi4_lite_core_ctrl;
     // AXI Read Task
     task axi_read;
         input [ADDR_WIDTH-1:0] addr;
+        reg [DATA_WIDTH-1:0] captured;
         begin
             @(posedge S_AXI_ACLK);
             S_AXI_ARADDR = addr;
             S_AXI_ARVALID = 1;
             wait(S_AXI_ARREADY);
             @(posedge S_AXI_ACLK);
+            #1;
             S_AXI_ARVALID = 0;
             S_AXI_RREADY = 1;
             wait(S_AXI_RVALID);
+            captured = S_AXI_RDATA;
             @(posedge S_AXI_ACLK);
+            #1;
             S_AXI_RREADY = 0;
-            $display("[AXI READ] Addr=0x%0h, Data=0x%0h, RRESP=%b", addr, S_AXI_RDATA, S_AXI_RRESP);
+            $display("[AXI READ] Addr=0x%0h, Data=0x%0h, RRESP=%b", addr, captured, S_AXI_RRESP);
         end
     endtask
 
@@ -168,11 +182,13 @@ module tb_axi4_lite_core_ctrl;
         S_AXI_AWADDR  = 6'h00;
         S_AXI_AWVALID = 1'b1;
         repeat (TIMEOUT_CYCLES + 2) @(posedge S_AXI_ACLK);
-        S_AXI_AWVALID = 1'b0;
 
         $display(">> Checking timeout status via status register read...");
+        // Read must happen while AWVALID is still stuck: aw_timeout is
+        // combinational and clears as soon as AWVALID is released.
         axi_read(6'h04);
         $display(">> SUCCESS: Hardware Timeout Engine protection verified via status register!");
+        S_AXI_AWVALID = 1'b0;
 
         // Transaction 5: Bad Address Space Request Handling Verification
         $display("\\n[STEP 5] Requesting data mapping configurations from an invalid memory address pointer...");
