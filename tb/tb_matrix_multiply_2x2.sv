@@ -63,6 +63,7 @@ module tb_matrix_multiply_2x2;
             b00 = tb00; b01 = tb01; b10 = tb10; b11 = tb11;
             en = 1;
             @(posedge clk);
+            #1;
             en = 0;
             wait(valid);
             @(posedge clk);
@@ -96,7 +97,8 @@ module tb_matrix_multiply_2x2;
         run_test(2, 3, 0, 2, 1, 4, 6, 8, 0, 12, 18, 16, 12);
 
         // Case 3: Negative values
-        run_test(3, -1, 2, -3, 4, 5, -6, 7, -8, -19, 22, -43, 50);
+        // C = [[-1,2],[-3,4]] x [[5,-6],[7,-8]] = [[9,-10],[13,-14]]
+        run_test(3, -1, 2, -3, 4, 5, -6, 7, -8, 9, -10, 13, -14);
 
         // Case 4: All zeros
         run_test(4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
