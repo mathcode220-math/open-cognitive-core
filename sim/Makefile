@@ -39,41 +39,41 @@ XSIM_FLAGS := -nolog -norecompile
 all: verilator
 
 verilator: $(BUILD_DIR)/V$(TOP_MODULE)
-@echo "✓ Simulation binary ready: $(BUILD_DIR)/V$(TOP_MODULE)"
+	@echo "✓ Simulation binary ready: $(BUILD_DIR)/V$(TOP_MODULE)"
 
 $(BUILD_DIR)/V$(TOP_MODULE): $(RTL_SRCS) $(TB_SRCS)
-@mkdir -p $(BUILD_DIR)
-verilator $(VERILATOR_FLAGS) \
-$(RTL_SRCS) $(TB_SRCS)
-$(MAKE) -C $(OBJ_DIR) -f V$(TOP_MODULE).mk
+	@mkdir -p $(BUILD_DIR)
+	verilator $(VERILATOR_FLAGS) \
+	$(RTL_SRCS) $(TB_SRCS)
+	$(MAKE) -C $(OBJ_DIR) -f V$(TOP_MODULE).mk
 
 run-verilator: $(BUILD_DIR)/V$(TOP_MODULE)
-$(BUILD_DIR)/V$(TOP_MODULE)
+	$(BUILD_DIR)/V$(TOP_MODULE)
 
 xsim: 
-@echo "Compiling with XSIM (Vivado)..."
-xvlog $(RTL_SRCS) $(TB_SRCS)
-xelab $(XSIM_FLAGS) $(TOP_MODULE)
-xsim $(TOP_MODULE) $(XSIM_FLAGS)
+	@echo "Compiling with XSIM (Vivado...)"
+	xvlog $(RTL_SRCS) $(TB_SRCS)
+	xelab $(XSIM_FLAGS) $(TOP_MODULE)
+	xsim $(TOP_MODULE) $(XSIM_FLAGS)
 
 clean:
-rm -rf $(BUILD_DIR) *.log *.jou xelab.* xsim.dir/ *.wdb
+	rm -rf $(BUILD_DIR) *.log *.jou xelab.* xsim.dir/ *.wdb
 
 help:
-@echo "Open Cognitive Core Project - Build System"
-@echo "============================================="
-@echo ""
-@echo "Usage:"
-@echo "  make              - Build with Verilator (default)"
-@echo "  make verilator    - Build with Verilator"
-@echo "  make xsim         - Build with XSIM (Vivado)"
-@echo "  make run-verilator - Run Verilator simulation"
-@echo "  make clean        - Remove build artifacts"
-@echo ""
-@echo "Environment Variables:"
-@echo "  SIM=<tool>        - Select simulator (verilator|xsim)"
-@echo "  TOP_MODULE=<name> - Top module for simulation"
-@echo ""
-@echo "Examples:"
-@echo "  make TOP_MODULE=tb_softmax"
-@echo "  make xsim TOP_MODULE=tb_axi4_lite"
+	@echo "Open Cognitive Core Project - Build System"
+	@echo "============================================="
+	@echo ""
+	@echo "Usage:"
+	@echo "  make              - Build with Verilator (default)"
+	@echo "  make verilator    - Build with Verilator"
+	@echo "  make xsim         - Build with XSIM (Vivado)"
+	@echo "  make run-verilator - Run Verilator simulation"
+	@echo "  make clean        - Remove build artifacts"
+	@echo ""
+	@echo "Environment Variables:"
+	@echo "  SIM=<tool>        - Select simulator (verilator|xsim)"
+	@echo "  TOP_MODULE=<name> - Top module for simulation"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make TOP_MODULE=tb_softmax"
+	@echo "  make xsim TOP_MODULE=tb_axi4_lite"

@@ -41,6 +41,7 @@ The compilation artifacts from **Pocket-LLM** directly feed into the core hardwa
                                                  +---------------------------+
 ```
 
+For the low-level silicon implementation and C-Driver specifications, please refer to the main repository: [Open-Cognitive-Core](https://github.com/mathcode220-math/open-cognitive-core).
 For the low-level silicon implementation and C-Driver specifications, please refer to the main repository: [Pocket-LLM](https://github.com/mathcode220-math/-Pocket-LLM-).
 
 ## System Architecture
@@ -50,10 +51,10 @@ For the low-level silicon implementation and C-Driver specifications, please ref
 |                     AXI4-Lite Control Bus                         |
 |  (RISC-V / CPU Control Interface)                                |
 +------------------------------------------------------------------+
-                              |
-        +---------------------+---------------------+
-        |                                           |
-        v                                           v
+                               |
+         +---------------------+---------------------+
+         |                                           |
+         v                                           v
 +-------------------+                   +-------------------+
 |   HDC Subsystem   |                   |   ML Subsystem    |
 |                   |                   |                   |
@@ -69,15 +70,15 @@ For the low-level silicon implementation and C-Driver specifications, please ref
 |  +-------------+  |                   |  +-------------+  |
 |                   |                   |        |          |
 +-------------------+                   |        v          |
-                                        |  +-------------+  |
-                                        |  | ReLU        |  |
-                                        |  +-------------+  |
-                                        |        |          |
-                                        |        v          |
-                                        |  +-------------+  |
-                                        |  | Softmax     |  |
-                                        |  +-------------+  |
-                                        +-------------------+
+                                         |  +-------------+  |
+                                         |  | ReLU        |  |
+                                         |  +-------------+  |
+                                         |        |          |
+                                         |        v          |
+                                         |  +-------------+  |
+                                         |  | Softmax     |  |
+                                         |  +-------------+  |
+                                         +-------------------+
 ```
 
 ## Module Descriptions
