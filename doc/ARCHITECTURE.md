@@ -50,10 +50,10 @@ For the low-level silicon implementation and C-Driver specifications, please ref
 |                     AXI4-Lite Control Bus                         |
 |  (RISC-V / CPU Control Interface)                                |
 +------------------------------------------------------------------+
-                              |
-        +---------------------+---------------------+
-        |                                           |
-        v                                           v
+                               |
+         +---------------------+---------------------+
+         |                                           |
+         v                                           v
 +-------------------+                   +-------------------+
 |   HDC Subsystem   |                   |   ML Subsystem    |
 |                   |                   |                   |
@@ -69,15 +69,15 @@ For the low-level silicon implementation and C-Driver specifications, please ref
 |  +-------------+  |                   |  +-------------+  |
 |                   |                   |        |          |
 +-------------------+                   |        v          |
-                                        |  +-------------+  |
-                                        |  | ReLU        |  |
-                                        |  +-------------+  |
-                                        |        |          |
-                                        |        v          |
-                                        |  +-------------+  |
-                                        |  | Softmax     |  |
-                                        |  +-------------+  |
-                                        +-------------------+
+                                         |  +-------------+  |
+                                         |  | ReLU        |  |
+                                         |  +-------------+  |
+                                         |        |          |
+                                         |        v          |
+                                         |  +-------------+  |
+                                         |  | Softmax     |  |
+                                         |  +-------------+  |
+                                         +-------------------+
 ```
 
 ## Module Descriptions

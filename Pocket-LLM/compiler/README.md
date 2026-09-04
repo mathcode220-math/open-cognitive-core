@@ -20,18 +20,18 @@ The Pocket-LLM compiler bridges the gap between large language models and hardwa
 |    4096)                                 |
 |  - Float32 precision                     |
 +------------------------------------------+
-                    |
-                    | Weight extraction
-                    v
+                     |
+                     | Weight extraction
+                     v
 +------------------------------------------+
 |  OCCP Compiler (this directory)          |
 |  - Tiling (4096x4096 -> 2x2 blocks)      |
 |  - Quantization (Float32 -> INT8)        |
 |  - Binary serialization                  |
 +------------------------------------------+
-                    |
-                    | compiled_model.bin
-                    v
+                     |
+                     | compiled_model.bin
+                     v
 +------------------------------------------+
 |  OCCP Hardware Bridge (C Driver)         |
 |  - Streams tiles to silicon              |
@@ -50,7 +50,7 @@ The Pocket-LLM compiler bridges the gap between large language models and hardwa
 ## Files
 
 | File | Purpose |
-|------|---------|
+|------|----------|
 | `occp_compiler.py` | Main compiler implementation |
 | `README.md` | This documentation file |
 

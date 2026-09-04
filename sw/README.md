@@ -19,18 +19,18 @@ The OCCP co-processor is designed in SystemVerilog and communicates via the **AX
 |  - Model weights                         |
 |  - Inference requests                    |
 +------------------------------------------+
-                    |
-                    | float matrices
-                    v
+                     |
+                     | float matrices
+                     v
 +------------------------------------------+
 |  OCCP Bridge API (this directory)        |
 |  - occp_init()                           |
 |  - occp_dispatch_matrix_multiply()       |
 |  - occp_reset()                          |
 +------------------------------------------+
-                    |
-                    | AXI4-Lite transactions
-                    v
+                     |
+                     | AXI4-Lite transactions
+                     v
 +------------------------------------------+
 |  OCCP Silicon Co-Processor (../rtl/)     |
 |  - axi4_lite_core_ctrl.sv                |
@@ -42,7 +42,7 @@ The OCCP co-processor is designed in SystemVerilog and communicates via the **AX
 ## Files
 
 | File | Purpose |
-|------|---------|
+|------|----------|
 | `occp_bridge.h` | Public API header with register definitions |
 | `occp_bridge.c` | Driver implementation with simulation support |
 | `Makefile` | Build system for compilation and testing |
@@ -170,7 +170,7 @@ The typical workflow for the complete AI-to-Silicon pipeline:
                                                 +------------------+
 ```
 
-For detailed compiler specifications and API reference, see: [Pocket-LLM Compiler Documentation](https://github.com/mathcode220-math/-Pocket-LLM-)
+For detailed compiler specifications and API reference, see: [Pocket-LLM Compiler Documentation](https://github.com/mathcode220-math/-Pocket-LLM-/tree/main/compiler)
 
 ## Troubleshooting
 
