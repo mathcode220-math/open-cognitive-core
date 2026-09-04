@@ -212,7 +212,7 @@ while (fread(tile, sizeof(float), 4, f) == 4) {
 fclose(f);
 ```
 
-For detailed C-Driver API reference, see: [OCCP Software Bridge Documentation](https://github.com/mathcode220-math/open-cognitive-core/tree/main/sw)
+For detailed C-Driver API reference, see: [OCCP Software Bridge Documentation](https://github.com/mathcode220-math/-Pocket-LLM-/tree/main/sw)
 
 ## Future Enhancements
 
