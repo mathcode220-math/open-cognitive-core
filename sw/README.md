@@ -170,7 +170,7 @@ The typical workflow for the complete AI-to-Silicon pipeline:
                                                 +------------------+
 ```
 
-For detailed compiler specifications and API reference, see: [Pocket-LLM Compiler Documentation](https://github.com/mathcode220-math/-Pocket-LLM-/tree/main/compiler)
+For detailed compiler specifications and API reference, see: [Pocket-LLM Compiler Documentation](https://github.com/mathcode220-math/-Pocket-LLM-)
 
 ## Troubleshooting
 

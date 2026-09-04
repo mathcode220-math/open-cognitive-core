@@ -29,26 +29,23 @@ target/
 .DS_Store
 Thumbs.db
 
-# Python specific
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-.coverage
-coverage/
-htmlcov/
-
 # Compiled files
+*.pyc
 *.class
 *.o
-*.obj
 *.exe
 *.dll
 *.so
 *.a
+*.obj
 *.out
 
-# Archives
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
 *.zip
 *.gz
 *.tar
