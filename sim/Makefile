@@ -28,6 +28,7 @@ TB_SRCS  := $(wildcard $(TB_DIR)/*.sv)
 VERILATOR_FLAGS := -Wall --trace --cc --exe \
                    --Mdir $(OBJ_DIR) \
                    --top-module $(TOP_MODULE) \
+                   --timing \
                    -CFLAGS "-std=c++17" \
                    -j
 
