@@ -36,7 +36,7 @@ module tb_matrix_multiply_2x2;
     logic valid;
 
     // Clock generation
-    always #5 clk = ~clk;
+    always #5 clk <= ~clk;
 
     // Instantiate DUT
     matrix_multiply_2x2 #(
