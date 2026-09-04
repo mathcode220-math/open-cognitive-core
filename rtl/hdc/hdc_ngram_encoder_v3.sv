@@ -1,6 +1,6 @@
 // =============================================================================
 // Project: Open Cognitive Core Project (OCCP)
-// File: hdc_ngram_encoder_v4_pipelined.sv
+// File: hdc_ngram_encoder_v3.sv
 // Description: Pipelined N-gram encoder with 4-stage token_to_hv
 //   - Breaks 1024-bit LFSR hash into 4 x 256-bit stages
 //   - Reduces critical path by 4x
@@ -25,7 +25,7 @@
 `timescale 1ns/1ps
 `endif
 
-module hdc_ngram_encoder_v4_pipelined #(
+module hdc_ngram_encoder_v3 #(
     parameter HV_DIM      = 1024,
     parameter NGRAM_SIZE  = 3,
     parameter TOKEN_WIDTH = 16,
@@ -237,11 +237,11 @@ module hdc_ngram_encoder_v4_pipelined #(
 `ifndef SYNTHESIS
     assert property (@(posedge clk) disable iff (!rst_n)
         (ngram_valid) |-> (ngram_hv != '0) && (ngram_hv != '1)
-    ) else $warning("HDC_NGRAM_V4: Degenerate hypervector!");
+    ) else $warning("HDC_NGRAM_V3: Degenerate hypervector!");
 
     assert property (@(posedge clk) disable iff (!rst_n)
         clear_context |=> !ngram_valid
-    ) else $error("HDC_NGRAM_V4: valid not cleared!");
+    ) else $error("HDC_NGRAM_V3: valid not cleared!");
 `endif
 
 endmodule
