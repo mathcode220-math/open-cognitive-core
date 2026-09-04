@@ -188,27 +188,31 @@ Each tile is stored in row-major order:
 
 ## Integration with Hardware Bridge
 
+The complete AI-to-Silicon pipeline connects the Pocket-LLM compiler with the OCCP hardware:
+
 ```python
-# Python: Generate compiled binary
+# Python: Generate compiled binary from model weights
 compiler = OCCPCompiler(enable_quantization=True)
 compiler.compile_model(layer_name="attention.q_proj", rows=64, cols=64)
 
-# Output: compiled_model.bin
+# Output: compiled_model.bin (Row-Major format)
 ```
 
 ```c
-// C: Load and execute binary
+// C: Load and execute binary on silicon
 FILE *f = fopen("compiled_model.bin", "rb");
 float tile[4];
 
 while (fread(tile, sizeof(float), 4, f) == 4) {
     float result[4];
     occp_dispatch_matrix_multiply(tile, identity_matrix, result);
-    // Process result...
+    // Stream results to SRAM Skew Buffer -> Systolic Array
 }
 
 fclose(f);
 ```
+
+For detailed C-Driver API reference, see: [OCCP Software Bridge Documentation](https://github.com/mathcode220-math/-Pocket-LLM-/tree/main/sw)
 
 ## Future Enhancements
 
