@@ -4,6 +4,45 @@
 
 The Open Cognitive Core Project (OCCP) is a hardware accelerator for Hyperdimensional Computing (HDC) and lightweight neural network operations, designed for FPGA implementation.
 
+## Data Pipeline & Hardware Handshake
+
+The compilation artifacts from **Pocket-LLM** directly feed into the core hardware registers. Below is the precise interaction map:
+
+1. **Pocket-LLM Compiler** processes tensors ➡️ Outputs `compiled_model.bin` (Row-Major format).
+2. **Open-Cognitive-Core (C-Driver)** loads the binary ➡️ Streams data directly into the **SRAM Skew Buffers**.
+
+```
++-------------------+     compiled_model.bin     +---------------------------+
+|   Pocket-LLM      | -------------------------> |  Open-Cognitive-Core      |
+|   Compiler        |  (Row-Major Binary Format) |  (C-Driver / Silicon)     |
+|                   |                            |                           |
+| - Loads ONNX/     |                            | - occp_bridge.c           |
+|   PyTorch models  |                            | - Memory-mapped I/O       |
+| - Tiles matrices  |                            | - AXI4-Lite interface     |
+| - Quantizes to    |                            |                           |
+|   INT8/Float32    |                            | +-----------------------+ |
+| - Exports binary  |                            | | SRAM Skew Buffer      | |
++-------------------+                            | | (Cycle delays for     | |
+                                                 | |  systolic timing)     | |
+                                                 | +----------+------------+ |
+                                                 |            |              |
+                                                 |            v              |
+                                                 | +----------+------------+ |
+                                                 | | Systolic Array        | |
+                                                 | | (Matrix multiply      | |
+                                                 | |  engine)              | |
+                                                 | +----------+------------+ |
+                                                 |            |              |
+                                                 |            v              |
+                                                 | +----------+------------+ |
+                                                 | | ReLU / Softmax        | |
+                                                 | | (Activation units)    | |
+                                                 | +-----------------------+ |
+                                                 +---------------------------+
+```
+
+For the low-level silicon implementation and C-Driver specifications, please refer to the main repository: [Pocket-LLM](https://github.com/mathcode220-math/-Pocket-LLM-).
+
 ## System Architecture
 
 ```

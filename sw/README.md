@@ -139,14 +139,38 @@ Check if physical hardware is detected.
 | `0x40000020` | SRAM B | Matrix input buffer B |
 | `0x40000030` | SRAM Result | Output buffer |
 
-## Integration with Pocket-LLM
+## Integration with Pocket-LLM Compiler
 
-The typical workflow:
+The typical workflow for the complete AI-to-Silicon pipeline:
 
 1. **Pocket-LLM Compiler** reads model weights and tiles them into 2x2 matrices
-2. Compiled weights are saved as `compiled_model.bin`
+2. Compiled weights are saved as `compiled_model.bin` in Row-Major format
 3. This C driver reads the binary file and calls `occp_dispatch_matrix_multiply()` for each tile
 4. Results are streamed back to Pocket-LLM for text generation
+
+```
++------------------+     compiled_model.bin     +------------------+
+|  Pocket-LLM      | -------------------------> |  OCCP C-Driver   |
+|  Compiler        |  (Row-Major Binary Format) |  (occp_bridge.c) |
+|                  |                            |                  |
+| - Model weights  |                            | - Loads binary   |
+| - Tiling engine  |                            | - Streams to     |
+| - Quantization   |                            |   SRAM buffers   |
++------------------+                            +--------+---------+
+                                                         |
+                                                         v
+                                                +--------+---------+
+                                                |  OCCP Silicon    |
+                                                |  Co-Processor    |
+                                                |                  |
+                                                | - SRAM Skew      |
+                                                |   Buffer         |
+                                                | - Systolic Array |
+                                                | - ReLU/Softmax   |
+                                                +------------------+
+```
+
+For detailed compiler specifications and API reference, see: [Pocket-LLM Compiler Documentation](https://github.com/mathcode220-math/-Pocket-LLM-/tree/main/compiler)
 
 ## Troubleshooting
 
