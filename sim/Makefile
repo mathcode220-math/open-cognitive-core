@@ -25,7 +25,7 @@ RTL_SRCS := $(wildcard $(RTL_DIR)/math_core/*.sv) \
 TB_SRCS  := $(wildcard $(TB_DIR)/*.sv)
 
 # Verilator flags
-VERILATOR_FLAGS := -Wall --trace --cc --exe \
+VERILATOR_FLAGS := -Wall --trace --cc --exe --main \
                    --Mdir $(OBJ_DIR) \
                    --top-module $(TOP_MODULE) \
                    --timing \
