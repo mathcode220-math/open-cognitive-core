@@ -56,11 +56,13 @@ module tb_axi4_lite_core_ctrl;
     // External signals from core
     logic ctrl_global_en;
     logic ctrl_array_clr;
+    /* verilator lint_off UNUSEDSIGNAL */
     logic ctrl_softmax_start;
+    /* verilator lint_on UNUSEDSIGNAL */
     logic core_softmax_done = 1'b0;
 
     // Clock generation
-    always #5 S_AXI_ACLK = ~S_AXI_ACLK;
+    always #5 S_AXI_ACLK <= ~S_AXI_ACLK;
 
     // Instantiate DUT
     axi4_lite_core_ctrl #(
