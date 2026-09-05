@@ -79,7 +79,15 @@ For the low-level silicon implementation and C-Driver specifications, please ref
                                         |  +-------------+  |
                                         +-------------------+
 ```
+### Software Compilation Layer
 
+The hardware blocks above are fed by the **Pocket-LLM OCCP Compiler** ([repository](https://github.com/mathcode220-math/-Pocket-LLM-)), a Python-based tool that:
+
+- Compresses high-dimensional LLMs into low-dimensional hyperbolic tensors.
+- Converts standard ONNX models into INT8-quantized, tiled weight matrices.
+- Exports `.bin` files for firmware flashing and `.hex` files for RTL simulation.
+
+For compiler usage and output format details, see [`compiler/README.md`](https://github.com/mathcode220-math/-Pocket-LLM-/blob/main/compiler/README.md).
 ## Module Descriptions
 
 ### HDC Subsystem
