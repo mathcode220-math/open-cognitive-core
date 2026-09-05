@@ -252,7 +252,7 @@ module open_cognitive_top #(
     // =========================================================================
     // HDC N-gram Encoder
     // =========================================================================
-    hdc_ngram_encoder_v4_pipelined #(
+    hdc_ngram_encoder_v3 #(
         .HV_DIM(HV_DIM),
         .NGRAM_SIZE(NGRAM_SIZE),
         .TOKEN_WIDTH(TOKEN_WIDTH)
