@@ -41,7 +41,7 @@ The compilation artifacts from **Pocket-LLM** directly feed into the core hardwa
                                                  +---------------------------+
 ```
 
-For the low-level silicon implementation and C-Driver specifications, please refer to the main repository: [Pocket-LLM](https://github.com/mathcode220-math/-Pocket-LLM-).
+For the low-level silicon implementation and C-Driver specifications, please refer to the main repository: [Pocket-LLM](https://github.com/mathcode220-math/-Pocket-LLM-) and the OCCP C-Driver documentation in [`sw/README.md`](../sw/README.md).
 
 ## System Architecture
 
@@ -87,7 +87,7 @@ The hardware blocks above are fed by the **Pocket-LLM OCCP Compiler** ([reposito
 - Converts standard ONNX models into INT8-quantized, tiled weight matrices.
 - Exports `.bin` files for firmware flashing and `.hex` files for RTL simulation.
 
-For compiler usage and output format details, see [`compiler/README.md`](https://github.com/mathcode220-math/-Pocket-LLM-/blob/main/compiler/README.md).
+For compiler usage and output format details, see [`Pocket-LLM/compiler/README.md`](../Pocket-LLM/compiler/README.md).
 ## Module Descriptions
 
 ### HDC Subsystem
