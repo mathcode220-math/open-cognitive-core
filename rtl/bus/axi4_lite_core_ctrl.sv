@@ -36,7 +36,9 @@ module axi4_lite_core_ctrl #(
     
     // AXI4-Lite Write Data Channel
     input  logic [DATA_WIDTH-1:0]     S_AXI_WDATA,
+    /* verilator lint_off UNUSEDSIGNAL */
     input  logic [3:0]                S_AXI_WSTRB,
+    /* verilator lint_on UNUSEDSIGNAL */
     input  logic                      S_AXI_WVALID,
     output logic                      S_AXI_WREADY,
     
@@ -95,9 +97,6 @@ module axi4_lite_core_ctrl #(
     // Timeout counter
     logic [7:0] timeout_counter;
     logic aw_timeout;
-    
-    // Byte lane write enable
-    logic byte_write_en;
     
     // =========================================================================
     // Timeout Counter Logic
@@ -241,9 +240,6 @@ module axi4_lite_core_ctrl #(
         if (!S_AXI_ARESETN) begin
             ctrl_reg <= '0;
         end else if (write_state == WRITE_DATA && S_AXI_WVALID && S_AXI_WREADY) begin
-            // Byte lane write enable logic
-            byte_write_en = 1'b1;
-            
             if (S_AXI_AWADDR == REG_CTRL) begin
                 // Full word write for control register
                 ctrl_reg <= S_AXI_WDATA;

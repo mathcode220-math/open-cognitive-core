@@ -7,6 +7,8 @@
 //   - Removed incorrect truncation that defeated overflow protection
 //=============================================================================
 
+/* verilator lint_off DECLFILENAME */
+
 module pe #(
     parameter DATA_WIDTH  = 8,
     parameter ARRAY_SIZE  = 4,
